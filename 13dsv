@@ -1,0 +1,32 @@
+local Players = game:GetService("Players")
+
+-- ฟังก์ชันสำหรับเพิ่มเพชรให้ผู้เล่น
+local function addGems(player, amount)
+	-- อ้างอิงโฟลเดอร์เก็บข้อมูลผู้เล่น (เช่น leaderstats หรือ DataStores)
+	local leaderstats = player:FindFirstChild("leaderstats")
+	if leaderstats then
+		local gems = leaderstats:FindFirstChild("Gems") or leaderstats:FindFirstChild("Diamonds")
+		if gems then
+			gems.Value = gems.Value + amount
+			print("เพิ่มเพชรจำนวน " .. amount .. " ให้กับ " .. player.Name .. " เรียบร้อยแล้ว")
+		end
+	end
+end
+
+-- ตัวอย่าง: กดพิมพ์คำสั่งในช่องแชทเพื่อเสกเพชร (เฉพาะผู้ดูแลระบบ)
+local ADMIN_USER_IDS = {12345678} -- ใส่ UserId ของคุณที่นี่
+
+Players.PlayerAdded:Connect(function(player)
+	player.Chatted:Connect(function(message)
+		-- ตรวจสอบว่าเป็น Admin หรือไม่
+		if table.find(ADMIN_USER_IDS, player.UserId) then
+			local args = string.split(message, " ")
+			if args[1] == "!addgems" and args[2] then
+				local amount = tonumber(args[2])
+				if amount then
+					addGems(player, amount)
+				end
+			end
+		end
+	end)
+end)
